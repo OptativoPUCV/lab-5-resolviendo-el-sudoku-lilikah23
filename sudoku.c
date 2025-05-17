@@ -86,38 +86,32 @@ int is_valid(Node* n){
     return 1;
 }
 
+List* get_adj_nodes(Node* n)
+{
+  List* adj_nodes = createList();
+  int i, j;
 
-List* get_adj_nodes(Node* n){
-    List* list = createList();
-    int i, j, num;
-    int found = 0;
+// Encontrar la primera celda vacía
+for (i = 0; i < 9; i++) {
+    for (j = 0; j < 9; j++) {
+        if (n->sudo[i][j] == 0) {
+        // Probar números del 1 al 9
+          for (int num = 1; num <= 9; num++) {
+            Node* new_node = copy(n);
+            new_node->sudo[i][j] = num;
 
-    // Buscar la primera celda vacía
-    for(i = 0; i < 9 && !found; i++){
-        for(j = 0; j < 9 && !found; j++){
-            if(n->sudo[i][j] == 0){
-                found = 1;
-                i--; j--; // Volver a la celda vacía encontrada
-                break;
+            // Verificar si el nuevo nodo es válido
+            if (is_valid(new_node)) {
+              pushBack(adj_nodes, new_node);
+            } else {
+                free(new_node);
             }
         }
+          return adj_nodes; // Solo generar nodos para la primera celda vacía
+      }
     }
-
-    // Si no hay celdas vacías, no hay nodos adyacentes
-    if(!found) return list;
-
-    // Probar todos los números posibles en la celda vacía
-    for(num = 1; num <= 9; num++){
-        Node* new = copy(n);
-        new->sudo[i][j] = num;
-        if(is_valid(new)){
-            pushBack(list, new);
-        } else {
-            free(new);
-        }
-    }
-
-    return list;
+  }
+  return adj_nodes;
 }
 
 
