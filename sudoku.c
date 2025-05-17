@@ -88,7 +88,35 @@ int is_valid(Node* n){
 
 
 List* get_adj_nodes(Node* n){
-    List* list=createList();
+    List* list = createList();
+    int i, j, num;
+    int found = 0;
+
+    // Buscar la primera celda vacía
+    for(i = 0; i < 9 && !found; i++){
+        for(j = 0; j < 9 && !found; j++){
+            if(n->sudo[i][j] == 0){
+                found = 1;
+                i--; j--; // Volver a la celda vacía encontrada
+                break;
+            }
+        }
+    }
+
+    // Si no hay celdas vacías, no hay nodos adyacentes
+    if(!found) return list;
+
+    // Probar todos los números posibles en la celda vacía
+    for(num = 1; num <= 9; num++){
+        Node* new = copy(n);
+        new->sudo[i][j] = num;
+        if(is_valid(new)){
+            pushBack(list, new);
+        } else {
+            free(new);
+        }
+    }
+
     return list;
 }
 
