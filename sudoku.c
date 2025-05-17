@@ -126,7 +126,34 @@ int is_final(Node* n){
 }
 
 Node* DFS(Node* initial, int* cont){
-  return NULL;
+    Stack* S = createStack();
+    push(S, initial);
+
+    while(!is_empty(S)){
+        Node* current = top(S);
+        pop(S);
+        (*cont)++;
+
+        if(is_final(current) && is_valid(current)){
+            // Libera los nodos restantes en la pila
+            while(!is_empty(S)){
+                Node* n = top(S);
+                pop(S);
+                free(n);
+            }
+            return current; // Solución encontrada
+        }
+
+        List* adj = get_adj_nodes(current);
+        Node* adj_node = first(adj);
+        while(adj_node != NULL){
+            push(S, adj_node);
+            adj_node = next(adj);
+        }
+        free(current);
+        free(adj);
+    }
+    return NULL; // No se encontró solución
 }
 
 
